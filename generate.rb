@@ -7,24 +7,43 @@ require 'sqlite3'
 require 'fileutils'
 require 'liquid'
 require 'erubis'
+require 'logger'
+
+require_relative 'config'
+require_relative 'multi_io'
+
+log_path = CONFIG[:log_path]
+logger = Logger.new MultiIO.new(STDOUT, File.open(log_path, 'a'))
 
 template = Erubis::Eruby.new File.read('assets/template.html.erb')
-out_path = File.expand_path 'output'
+out_path = CONFIG[:output_path]
 
-db_path = File.expand_path '~/Dropbox/Synced/Clips.db'
+db_path = CONFIG[:db_path]
 db = SQLite3::Database.open db_path
 
-clips = db.prepare("SELECT * FROM clips").execute.to_a
-days = clips.group_by { |c| DateTime.iso8601(c[1]).to_date }.to_a
-weeks = days.group_by { |d| [d[0].year, d[0].strftime('%W').to_i] }
+checksum_path = File.join out_path, '.checksum'
+old_checksum = File.read(checksum_path).strip if File.exists?(checksum_path)
+new_checksum = Digest::SHA2.hexdigest(File.read(db_path))
 
-FileUtils.rm_rf out_path
-FileUtils.mkdir_p out_path
+if new_checksum == old_checksum
+  logger.info "Not changed since last generation. Exiting. "
+  exit
+else
+  clips = db.prepare("SELECT * FROM clips").execute.to_a
+  days = clips.group_by { |c| DateTime.iso8601(c[1]).to_date }.to_a
+  weeks = days.group_by { |d| [d[0].year, d[0].strftime('%W').to_i] }
 
-weeks.each do |week, days|
-  puts "Generating page for #{week}"
+  FileUtils.rm_rf out_path
+  FileUtils.mkdir_p out_path
 
-  html = template.result(week: week, days: days)
+  weeks.each do |week, days|
+    logger.info "Generating page for #{week}"
 
-  File.write(File.join(out_path, "#{week[0]} Week #{week[1].to_s.rjust(2, '0')}.html"), html)
+    html = template.result(week: week, days: days)
+
+    File.write(File.join(out_path, "#{week[0]} Week #{week[1].to_s.rjust(2, '0')}.html"), html)
+  end
+
+  File.write(checksum_path, new_checksum)
 end
+

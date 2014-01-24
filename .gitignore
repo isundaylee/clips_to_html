@@ -1,3 +1,5 @@
 .bundle/
 output/
 vendor/
+config.rb
+generate.log
