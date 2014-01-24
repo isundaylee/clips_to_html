@@ -35,5 +35,5 @@ weeks.each do |week, days|
 
   html = template.result(week: week, days: days)
 
-  File.write(File.join(out_path, "#{week[0]} Week #{week[1]}.html"), html)
+  File.write(File.join(out_path, "#{week[0]} Week #{week[1].to_s.rjust(2, '0')}.html"), html)
 end

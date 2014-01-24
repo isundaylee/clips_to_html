@@ -20,3 +20,11 @@ body {
 .text:last-child {
   margin-bottom: 0;
 }
+
+a {
+  color: black !important;
+}
+
+.day {
+  display: none;
+}

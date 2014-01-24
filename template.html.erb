@@ -5,20 +5,30 @@
   <link rel="stylesheet" href="../styles.css">
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <script>
+    function toggle(id) {
+      var d = document.getElementById(id);
+
+      d.style.display = (d.style.display == 'none' || d.style.display == '') ? 'block' : 'none';
+    }
+  </script>
 </head>
 <body>
   <h1><%= week[0] %> Week <%= week[1] %></h1>
   <% for day in days %>
-    <h2><%= day[0].strftime('%A, %b %-d, %Y') %></h2>
+    <h2><a onclick="toggle('week<%= day[0].wday %>'); "><%= day[0].strftime('%A, %b %-d, %Y') %></a></h2>
+    <div class="day" id="week<%= day[0].wday %>">
     <% for clip in day[1] %>
-      <% next if clip[1].strip.empty? %>
+      <% next if clip[2].strip.empty? %>
       <div class="th clip">
       <p class="time"><small><%= DateTime.iso8601(clip[1]).strftime('%A, %b %-d, %Y %T') %></small></p>
       <% clip[2].split("\n").each do |line| %>
-        <p class="text"><%= line %></p>
+        <p class="text"><%= line.strip.gsub("　", '') %></p>
       <% end %>
       </div>
     <% end %>
+    </div>
   <% end %>
 </body>
 </html>
