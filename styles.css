@@ -1,0 +1,22 @@
+body {
+  margin: 30px 30px;
+}
+
+.clip {
+  margin: 10px 0;
+  width: 100%;
+  padding: 10px;
+}
+
+.time {
+  color: gray;
+  margin-bottom: 0;
+}
+
+.text {
+  margin-bottom: 0.5em;
+}
+
+.text:last-child {
+  margin-bottom: 0;
+}
