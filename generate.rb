@@ -8,7 +8,7 @@ require 'fileutils'
 require 'liquid'
 require 'erubis'
 
-template = Erubis::Eruby.new File.read('template.html.erb')
+template = Erubis::Eruby.new File.read('assets/template.html.erb')
 out_path = File.expand_path 'output'
 
 db_path = File.expand_path '~/Dropbox/Synced/Clips.db'
@@ -23,15 +23,6 @@ FileUtils.mkdir_p out_path
 
 weeks.each do |week, days|
   puts "Generating page for #{week}"
-
-  days.each do |day|
-    date = day[0]
-    clips = day[1]
-
-    readable = date.strftime('%A, %b %-d, %Y')
-  end
-
-  # html = Liquid::Template.parse(template).render 'week' => week, 'days' => days
 
   html = template.result(week: week, days: days)
 
