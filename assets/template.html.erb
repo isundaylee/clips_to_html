@@ -31,6 +31,10 @@
           <p class="text"><%= line.strip.gsub("　", '') %></p>
         <% end %>
       <% end %>
+
+      <% if item.type == :screenshot %>
+        <a href="<%= item.path %>"><img class="screenshot th" src="<%= item.path %>"/></a>
+      <% end %>
       </div>
     <% end %>
     </div>

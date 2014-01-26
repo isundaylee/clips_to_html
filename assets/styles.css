@@ -28,3 +28,9 @@ a {
 .day {
   display: none;
 }
+
+.screenshot {
+  max-width: 600px;
+  display: block;
+  margin: 0 auto;
+}
