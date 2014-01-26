@@ -11,6 +11,7 @@ require 'logger'
 
 require_relative 'config'
 require_relative 'multi_io'
+require_relative 'clip'
 
 log_path = CONFIG[:log_path]
 logger = Logger.new MultiIO.new(STDOUT, File.open(log_path, 'a'))
@@ -29,8 +30,9 @@ if new_checksum == old_checksum
   logger.info "Not changed since last generation. Exiting. "
   exit
 else
-  clips = db.prepare("SELECT * FROM clips").execute.to_a
-  days = clips.group_by { |c| DateTime.iso8601(c[1]).to_date }.to_a
+  clips_rec = db.prepare("SELECT * FROM clips").execute.to_a
+  clips = clips_rec.map { |rec| Clip.new DateTime.iso8601(rec[1]), rec[2] }
+  days = clips.group_by { |c| c.datetime.to_date }.to_a
   weeks = days.group_by { |d| [d[0].year, d[0].strftime('%W').to_i] }
 
   FileUtils.rm_rf out_path

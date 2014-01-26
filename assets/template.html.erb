@@ -22,12 +22,14 @@
   <% for day in days %>
     <h2><a onclick="toggle('week<%= day[0].wday %>'); "><%= day[0].strftime('%A, %b %-d, %Y') %></a></h2>
     <div class="day" id="week<%= day[0].wday %>">
-    <% for clip in day[1] %>
-      <% next if clip[2].strip.empty? %>
+    <% for item in day[1] %>
+      <% next if (item.type == :clip && item.text.strip.empty?) %>
       <div class="th clip">
-      <p class="time"><small><%= DateTime.iso8601(clip[1]).strftime('%A, %b %-d, %Y %T') %></small></p>
-      <% clip[2].split("\n").each do |line| %>
-        <p class="text"><%= line.strip.gsub("　", '') %></p>
+      <p class="time"><small><%= item.datetime.strftime('%A, %b %-d, %Y %T') %></small></p>
+      <% if item.type == :clip %>
+        <% item.text.split("\n").each do |line| %>
+          <p class="text"><%= line.strip.gsub("　", '') %></p>
+        <% end %>
       <% end %>
       </div>
     <% end %>
