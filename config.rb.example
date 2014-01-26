@@ -2,4 +2,6 @@ CONFIG = {}
 
 CONFIG[:output_path] = File.expand_path 'output'
 CONFIG[:db_path] = File.expand_path '~/Dropbox/Synced/Clips.db'
+CONFIG[:screenshot_path] = File.expand_path '~/Pictures/Screen Shots'
+CONFIG[:misc_pictures_path] = File.expand_path '~/Pictures/Miscellaneous'
 CONFIG[:log_path] = File.expand_path 'generate.log'
