@@ -15,10 +15,42 @@
 
       d.style.display = (d.style.display == 'none' || d.style.display == '') ? 'block' : 'none';
     }
+
+    function show(id) {
+      var d = document.getElementById(id)
+
+      if (d) d.style.display = 'block';
+    }
+
+    function hide(id) {
+      var d = document.getElementById(id);
+
+      if (d) d.style.display = 'none';
+    }
+
+    function show_all() {
+      for (var i=0; i<7; i++) show('week' + i);
+    }
+
+    function hide_all() {
+      for (var i=0; i<7; i++) hide('week' + i);
+    }
+
+    function toggle_all() {
+      var flag = false;
+
+      for (var i=0; i<7; i++) {
+        var d = document.getElementById('week' + i);
+
+        if (d) flag = (flag || (d.style.display != 'none' && d.style.display != ''));
+      }
+
+      flag ? hide_all() : show_all();
+    }
   </script>
 </head>
 <body>
-  <h1><%= week[0] %> Week <%= week[1] %></h1>
+  <h1><a onclick="toggle_all(); "><%= week[0] %> Week <%= week[1] %></a></h1>
   <% for day in days %>
     <h2><a onclick="toggle('week<%= day[0].wday %>'); "><%= day[0].strftime('%A, %b %-d, %Y') %></a></h2>
     <div class="day" id="week<%= day[0].wday %>">
