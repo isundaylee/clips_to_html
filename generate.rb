@@ -34,10 +34,15 @@ else
   clips_rec = db.prepare("SELECT * FROM clips").execute.to_a
 
   clips = clips_rec.map { |rec| Clip.new DateTime.iso8601(rec[1]), rec[2] }
-  screenshots = Dir[File.join(CONFIG[:screenshot_path], '*')].map { |ss| Screenshot.new File.mtime(ss), ss }
-  miscs = Dir[File.join(CONFIG[:misc_pictures_path], '*')].map { |mp| Screenshot.new File.mtime(mp), mp }
+  screenshots = CONFIG[:screenshot_path].nil? ?
+    [] :
+    Dir[File.join(CONFIG[:screenshot_path], '*')].map { |ss| Screenshot.new DateTime.parse(File.mtime(ss).to_s), ss }
+  miscs = CONFIG[:misc_pictures_path].nil? ?
+    [] :
+    Dir[File.join(CONFIG[:misc_pictures_path], '*')].map { |mp| Screenshot.new DateTime.parse(File.mtime(mp).to_s), mp }
 
   items = clips + screenshots + miscs
+  items.sort_by! { |i| i.datetime }
 
   days = items.group_by { |c| c.datetime.to_date }.to_a
   weeks = days.group_by { |d| [d[0].year, d[0].strftime('%W').to_i] }
