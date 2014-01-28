@@ -18,6 +18,7 @@ log_path = CONFIG[:log_path]
 logger = Logger.new MultiIO.new(STDOUT, File.open(log_path, 'a'))
 
 template = Erubis::Eruby.new File.read('assets/template.html.erb')
+index_template = Erubis::Eruby.new File.read('assets/index.html.erb')
 out_path = CONFIG[:output_path]
 
 db_path = CONFIG[:db_path]
@@ -46,9 +47,14 @@ else
 
   days = items.group_by { |c| c.datetime.to_date }.to_a
   weeks = days.group_by { |d| [d[0].year, d[0].strftime('%W').to_i] }
+  years = weeks.keys.group_by { |w| w[0] }
 
   FileUtils.rm_rf out_path
   FileUtils.mkdir_p out_path
+
+  logger.info "Generating index path"
+
+  File.write(File.join(out_path, "index.html"), index_template.result(years: years))
 
   weeks.each do |week, days|
     logger.info "Generating page for #{week}"

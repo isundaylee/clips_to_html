@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    <%= File.read('assets/normalize.css') %>
+    <%= File.read('assets/foundation.min.css') %>
+    <%= File.read('assets/index.css') %>
+  </style>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+<body>
+  <% for year, weeks in years %>
+    <h1><%= year %></h1>
+    <div class="weeks">
+      <% for week in weeks %>
+        <a href="<%= week[0] %> Week <%= week[1] %>.html">
+          <div class="week th">
+            <p><%= week[1] %></p>
+          </div>
+        </a>
+      <% end %>
+    </div>
+  <% end %>
+</body>
+</html>
