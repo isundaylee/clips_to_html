@@ -14,7 +14,7 @@
     <h1><%= year %></h1>
     <div class="weeks">
       <% for week in weeks %>
-        <a href="<%= week[0] %> Week <%= week[1] %>.html">
+        <a href="<%= week[0] %> Week <%= week[1].to_s.rjust(2, '0') %>.html">
           <div class="week th">
             <p><%= week[1] %></p>
           </div>
