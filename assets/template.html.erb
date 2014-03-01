@@ -21,8 +21,15 @@
     <% for item in day[1] %>
       <% next if (item.type == :clip && item.text.strip.empty?) %>
       <div class="th clip">
-      <p class="time"><small><%= item.datetime.strftime('%A, %b %-d, %Y %T') %></small></p>
-      <% if item.type == :clip %>
+      <p class="time">
+        <small>
+          <%= item.datetime.strftime('%A, %b %-d, %Y %T') %>
+          <% if item.type == :ibooks_clip %>
+            , iBooks, <%= item.author %>, <%= item.title %>
+          <% end %>
+        </small>
+      </p>
+      <% if item.type == :clip || item.type == :ibooks_clip %>
         <% item.text.split("\n").each do |line| %>
           <p class="text"><%= line.strip.gsub("　", '') %></p>
         <% end %>

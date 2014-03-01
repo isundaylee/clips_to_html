@@ -13,6 +13,7 @@ require_relative 'config'
 require_relative 'multi_io'
 require_relative 'clip'
 require_relative 'screenshot'
+require_relative 'ibooks_clip'
 
 log_path = CONFIG[:log_path]
 logger = Logger.new MultiIO.new(STDOUT, File.open(log_path, 'a'))
@@ -34,7 +35,17 @@ if new_checksum == old_checksum
 else
   clips_rec = db.prepare("SELECT * FROM clips").execute.to_a
 
-  clips = clips_rec.map { |rec| Clip.new DateTime.iso8601(rec[1]), rec[2] }
+  clips = clips_rec.map do |rec|
+    datetime = DateTime.iso8601(rec[1])
+    raw_content = rec[2]
+
+    if IbooksClip.check(raw_content)
+      IbooksClip.new datetime, raw_content
+    else
+      Clip.new datetime, raw_content
+    end
+  end
+
   screenshots = CONFIG[:screenshot_path].nil? ?
     [] :
     Dir[File.join(CONFIG[:screenshot_path], '*')].map { |ss| Screenshot.new DateTime.parse(File.mtime(ss).to_s), ss }
